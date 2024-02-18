@@ -13,6 +13,9 @@ export function NewNoteCard({ onNoteCreated }: NewNoteCardProps) {
   const [shouldShowOnboarding, setShouldShowOnboarding] = useState(true);
   const [isRecording, setIsRecording] = useState(false);
   const [content, setContent] = useState("");
+  const [selectedLanguage, setSelectedLanguage] = useState("en-US");
+  const [isLanguageSelectDisabled, setIsLanguageSelectDisabled] =
+    useState(false);
 
   function handleStartEditor() {
     setShouldShowOnboarding(false);
@@ -38,7 +41,11 @@ export function NewNoteCard({ onNoteCreated }: NewNoteCardProps) {
     setContent("");
     setShouldShowOnboarding(true);
 
-    toast.success("Nota criada com suceso!");
+    toast.success("Nota criada com sucesso!");
+  }
+
+  function handleLanguageChange(event: ChangeEvent<HTMLSelectElement>) {
+    setSelectedLanguage(event.target.value);
   }
 
   function handleStartRecording() {
@@ -51,6 +58,7 @@ export function NewNoteCard({ onNoteCreated }: NewNoteCardProps) {
     }
 
     setIsRecording(true);
+    setIsLanguageSelectDisabled(true);
     setShouldShowOnboarding(false);
 
     const SpeechRecognitionAPI =
@@ -58,7 +66,7 @@ export function NewNoteCard({ onNoteCreated }: NewNoteCardProps) {
 
     speechRecognition = new SpeechRecognitionAPI();
 
-    speechRecognition.lang = "en-US";
+    speechRecognition.lang = selectedLanguage;
     speechRecognition.continuous = true;
     speechRecognition.maxAlternatives = 1;
     speechRecognition.interimResults = true;
@@ -84,11 +92,13 @@ export function NewNoteCard({ onNoteCreated }: NewNoteCardProps) {
     if (speechRecognition !== null) {
       speechRecognition.stop();
     }
+
+    setIsLanguageSelectDisabled(false);
   }
 
   return (
     <Dialog.Root>
-      <Dialog.Trigger className="rounded-md flex flex-col gap-3 text-left bg-slate-700 p-5 hover:ring-2 hover:ring-slate-600 focus-visible:ring-2 focus-visible:ring-lime-400 outline-none">
+      <Dialog.Trigger className="rounded-md flex flex-col gap-3 text-left bg-slate-700 p-5 hover:ring-2 hover:ring-slate-600 focus-visible:ring-1 focus-visible:ring-lime-400 outline-none">
         <span className="text-sm font-medium text-slate-200">
           Adicionar nota
         </span>
@@ -100,7 +110,7 @@ export function NewNoteCard({ onNoteCreated }: NewNoteCardProps) {
       <Dialog.Portal>
         <Dialog.Overlay className="inset-0 fixed bg-black/50" />
         <Dialog.Content className="fixed md:overflow-hidden inset-0 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-[640px] md:h-[60vh] w-full bg-slate-700 outline-none flex flex-col md:rounded-md">
-          <Dialog.Close className="absolute right-0 top-0 p-1.5 text-slate-400 bg-slate-800 xl:bg-transparent hover:xl:bg-slate-800">
+          <Dialog.Close className="absolute right-0 top-0 p-1.5 text-slate-400 bg-slate-800 xl:bg-transparent hover:xl:bg-slate-800 focus-visible:ring-1 focus-visible:ring-slate-800 outline-none">
             <X className="size-5" />
           </Dialog.Close>
 
@@ -110,13 +120,31 @@ export function NewNoteCard({ onNoteCreated }: NewNoteCardProps) {
                 Adicionar nota
               </span>
 
+              <div style={{ maxWidth: "158px" }}>
+                <label className="text-sm font-medium">
+                  <select
+                    className={`text-sm p-2 border rounded-md bg-transparent text-slate-400 outline-none ${
+                      isRecording
+                        ? "cursor-not-allowed border-slate-500"
+                        : "border-slate-500 hover:border-slate-800 focus:border-slate-800"
+                    } ${selectedLanguage === "pt-BR" ? "pr-6" : "pr-0"}`}
+                    value={selectedLanguage}
+                    onChange={handleLanguageChange}
+                    disabled={isLanguageSelectDisabled}
+                  >
+                    <option value="en-US">English (US)</option>
+                    <option value="pt-BR">Português (BR)</option>
+                  </select>
+                </label>
+              </div>
+
               {shouldShowOnboarding ? (
                 <p className="text-sm leading-6 text-slate-400">
                   Comece{" "}
                   <button
                     type="button"
                     onClick={handleStartRecording}
-                    className="font-medium text-lime-400 hover:underline"
+                    className="font-medium text-lime-400 hover:underline focus-visible:ring-1 focus-visible:ring-lime-700 outline-none"
                   >
                     gravando uma nota
                   </button>{" "}
@@ -124,7 +152,7 @@ export function NewNoteCard({ onNoteCreated }: NewNoteCardProps) {
                   <button
                     type="button"
                     onClick={handleStartEditor}
-                    className="font-medium text-lime-400 hover:underline"
+                    className="font-medium text-lime-400 hover:underline focus-visible:ring-1 focus-visible:ring-lime-700 outline-none"
                   >
                     utilize apenas texto
                   </button>
