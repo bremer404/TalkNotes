@@ -172,7 +172,7 @@ export function NewNoteCard({ onNoteCreated }: NewNoteCardProps) {
                 className="w-full flex items-center justify-center gap-2 bg-slate-900 py-4 text-center text-sm text-slate-300 outline-none font-medium hover:text-slate-100"
               >
                 <div className="size-3 rounded-full bg-red-500 animate-pulse" />
-                Recording in progress! (Click to stop)
+                Recording in progress! (click to stop)
               </button>
             ) : (
               <button
