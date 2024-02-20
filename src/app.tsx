@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from "react";
-import logo from "./assets/logo.svg";
+import logo from "./assets/logo-talknotes.svg";
 import { NewNoteCard } from "./components/new-note-card";
 import { NoteCard } from "./components/note-card";
 
@@ -60,7 +60,7 @@ export function App() {
 
   return (
     <div className="mx-auto max-w-6xl my-12 space-y-6 px-5">
-      <img src={""} alt="logo" />
+      <img src={logo} alt="TalkNotes" />
 
       <form className="w-full">
         <input
